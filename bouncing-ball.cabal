@@ -1,0 +1,23 @@
+cabal-version:       2.4
+name:                bouncing-ball
+
+-- The package version.  See the Haskell package versioning policy (PVP)
+-- for standards guiding when and how versions should be incremented.
+-- https://pvp.haskell.org
+-- PVP summary:      +-+------- breaking API changes
+--                   | | +----- non-breaking API additions
+--                   | | | +--- code changes with no API change
+version:             0.1.0.0
+synopsis:            A simple example of interactive graphical app in Haskell.
+license:             MIT
+license-file:        LICENSE
+author:              Ivan Perevezentsev
+maintainer:          ivan.perevezentsev@gmail.com
+category:            Graphics
+
+
+executable bouncing-ball
+  main-is:             Main.hs
+  build-depends:       base ^>=4.12.0.0
+  hs-source-dirs:      src
+  default-language:    Haskell2010
