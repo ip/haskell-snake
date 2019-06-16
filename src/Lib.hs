@@ -3,9 +3,15 @@ module Lib
     ) where
 
 someFunc :: IO ()
-someFunc = myIo 0
+someFunc = runStep
 
-myIo :: Integer -> IO ()
-myIo 5 = return ()
-myIo i = putStrLn (show i) >>
-        myIo (i + 1)
+runStep :: IO ()
+runStep = do
+    putStrLn "Enter a number or \"q\" to quit: "
+    line <- getLine
+    if line == "q" then
+        return ()
+    else do
+        let x = read line :: Integer
+            in putStrLn $ show x ++ " * 2 = " ++ (show $ x * 2)
+        runStep
