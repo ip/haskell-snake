@@ -3,4 +3,9 @@ module Lib
     ) where
 
 someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+someFunc = myIo 0
+
+myIo :: Integer -> IO ()
+myIo 5 = return ()
+myIo i = putStrLn (show i) >>
+        myIo (i + 1)
