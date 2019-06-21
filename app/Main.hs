@@ -30,4 +30,25 @@ runStep = do
 --     threadDelay 100000
 --     when (step > 0) $ tick (step - 1)
 
-main = print 1234
+
+
+data GameState = GameState Integer
+
+frameDelay = 100 * 1000 -- Microseconds
+initialState = GameState 0
+
+main = runLoop initialState
+
+runLoop :: GameState -> IO ()
+runLoop prevState = do
+    nextState <- runFrame prevState
+    threadDelay frameDelay
+    runLoop nextState
+
+runFrame :: GameState -> IO GameState
+runFrame state = do
+    w <- getWidth
+    h <- getHeight
+    print i
+    return $ GameState (i + 1)
+        where GameState i = state
