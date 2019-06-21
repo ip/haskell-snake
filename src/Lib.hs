@@ -2,6 +2,9 @@ module Lib
     ( someFunc
     ) where
 
+import Control.Concurrent
+import Control.Monad
+
 someFunc :: IO ()
 
 {--
@@ -20,9 +23,10 @@ runStep = do
         runStep
 --}
 
-if' :: Bool -> a -> a -> a
-if' True  x y = x
-if' False x y = y
+someFunc = tick 10
 
-someFunc =
-    putStrLn $ if' True "Yes" "No"
+tick :: Integer -> IO ()
+tick step = do
+    print step
+    threadDelay 100000
+    when (step > 0) $ tick (step - 1)
