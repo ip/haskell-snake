@@ -34,10 +34,12 @@ runStep = do
 
 data GameState = GameState Integer
 
-frameDelay = 100 * 1000 -- Microseconds
+frameDelay = 300 * 1000 -- Microseconds
 initialState = GameState 0
 
-main = runLoop initialState
+main = do
+    initGame
+    runLoop initialState
 
 runLoop :: GameState -> IO ()
 runLoop prevState = do
@@ -45,10 +47,15 @@ runLoop prevState = do
     threadDelay frameDelay
     runLoop nextState
 
+initGame :: IO ()
+initGame = startCharm
+
 runFrame :: GameState -> IO GameState
 runFrame state = do
-    w <- getWidth
-    h <- getHeight
-    print i
+    -- w <- getWidth
+    -- h <- getHeight
+    clearScreen
+    let i_ = fromIntegral i in moveCursor i_ i_
+    blotChar 'o'
     return $ GameState (i + 1)
         where GameState i = state
