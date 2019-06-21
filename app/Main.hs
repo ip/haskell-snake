@@ -4,39 +4,17 @@ import Control.Concurrent
 import Control.Monad
 import HsCharm
 
-main :: IO ()
+data Vec2 = Vec2 { x :: Int
+                 , y :: Int } deriving (Show)
 
-{--
--- A REPL which multiplies numbers by 2
-someFunc = runStep
-
-runStep :: IO ()
-runStep = do
-    putStrLn "Enter a number or \"q\" to quit: "
-    line <- getLine
-    if line == "q" then
-        return ()
-    else do
-        let x = read line :: Integer
-            in putStrLn $ show x ++ " * 2 = " ++ (show $ x * 2)
-        runStep
---}
-
--- someFunc = tick 10
-
--- tick :: Integer -> IO ()
--- tick step = do
---     print step
---     threadDelay 100000
---     when (step > 0) $ tick (step - 1)
-
-
-
-data GameState = GameState Integer
+data GameState = GameState { position :: Vec2
+                           , velocity :: Vec2 }
 
 frameDelay = 300 * 1000 -- Microseconds
-initialState = GameState 0
+initialState = GameState { position = Vec2 0 0
+                         , velocity = Vec2 1 1 }
 
+main :: IO ()
 main = do
     initGame
     runLoop initialState
@@ -55,7 +33,14 @@ runFrame state = do
     -- w <- getWidth
     -- h <- getHeight
     clearScreen
-    let i_ = fromIntegral i in moveCursor i_ i_
+    let Vec2 x y = position state in moveCursor x y
     blotChar 'o'
-    return $ GameState (i + 1)
-        where GameState i = state
+    return $ updateState state
+
+updateState :: GameState -> GameState
+updateState state = GameState { position = (position state) `addVec2` (velocity state)
+                              , velocity = velocity state }
+
+addVec2 :: Vec2 -> Vec2 -> Vec2
+a `addVec2` b = Vec2 { x = (x a) + (x b)
+                     , y = (y a) + (y b) }
