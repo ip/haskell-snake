@@ -27,14 +27,13 @@ runLoop prevState = do
     threadDelay frameDelay
     runLoop nextState
 
-initGame :: IO ()
-initGame = startCharm
-
 runFrame :: GameState -> IO GameState
 runFrame state = do
     renderFrame state
     inputs <- getInputs
     let nextState = updateState inputs state in return nextState
+
+-- Pure game logic
 
 updateState :: Inputs -> GameState -> GameState
 updateState inputs s =
@@ -48,6 +47,9 @@ a `addVec2` b = Vec2 { x = (x a) + (x b)
                      , y = (y a) + (y b) }
 
 -- Side effects
+
+initGame :: IO ()
+initGame = startCharm
 
 renderFrame :: GameState -> IO ()
 renderFrame state = do
