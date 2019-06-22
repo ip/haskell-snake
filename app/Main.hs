@@ -12,8 +12,8 @@ data GameState = GameState { position :: Vec2
 
 data Inputs = Inputs { screenSize :: Vec2 }
 
-frameDelay = 100 * 1000 -- Microseconds
-initialState = GameState { position = Vec2 0 0
+frameDelay = 50 * 1000 -- Microseconds
+initialState = GameState { position = Vec2 1 1
                          , velocity = Vec2 1 1 }
 
 main :: IO ()
@@ -36,15 +36,36 @@ runFrame state = do
 -- Pure game logic
 
 updateState :: Inputs -> GameState -> GameState
-updateState inputs s =
+updateState inputs = (bounceOffWalls inputs) . advancePosition
+
+advancePosition :: GameState -> GameState
+advancePosition s =
     GameState {
         position = (position s) `addVec2` (velocity s),
         velocity = velocity s
     }
 
+bounceOffWalls :: Inputs -> GameState -> GameState
+bounceOffWalls inputs s =
+    GameState {
+        position = p,
+        velocity = if      x p == (w - 1) || x p == 0 then mulCoordsVec2 v (Vec2 (-1) 1)
+                   else if y p == (h - 1) || y p == 0 then mulCoordsVec2 v (Vec2 1 (-1))
+                   else    v
+    }
+        where v = velocity s
+              p = position s
+              w = x $ screenSize inputs
+              h = y $ screenSize inputs
+
 addVec2 :: Vec2 -> Vec2 -> Vec2
 a `addVec2` b = Vec2 { x = (x a) + (x b)
                      , y = (y a) + (y b) }
+
+-- Multiply each corresponding pair of coordinates of two vectors (like zip)
+mulCoordsVec2 :: Vec2 -> Vec2 -> Vec2
+mulCoordsVec2 a b = Vec2 { x = (x a) * (x b)
+                         , y = (y a) * (y b) }
 
 -- Side effects
 
