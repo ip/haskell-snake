@@ -50,14 +50,17 @@ bounceOffWalls inputs s =
     GameState {
         position = p,
         velocity = Vec2 {
-            x = if x p == (w - 1) || x p == 0 then -x v else x v,
-            y = if y p == (h - 1) || y p == 0 then -y v else y v
+            x = if isAtBorder (x p) w then -x v else x v,
+            y = if isAtBorder (y p) h then -y v else y v
         }
     }
         where v = velocity s
               p = position s
               w = x $ screenSize inputs
               h = y $ screenSize inputs
+
+isAtBorder :: Int -> Int -> Bool
+isAtBorder i size = i == (size - 1) || i == 0
 
 addVec2 :: Vec2 -> Vec2 -> Vec2
 a `addVec2` b = Vec2 { x = x a + x b
