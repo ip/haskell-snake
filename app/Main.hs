@@ -12,7 +12,10 @@ data GameState = GameState {
     randomGen :: StdGen,
     screenSize :: Vec2,
     foodPosition :: Vec2,
-    snakeBody :: [Vec2]
+    -- Snake head is the list head
+    snakeBody :: [Vec2],
+    snakeLength :: Int,
+    direction :: Vec2
 } deriving (Show)
 
 data Inputs = Inputs
@@ -41,10 +44,33 @@ runFrame state = do
 ---------------
 
 updateState :: Inputs -> GameState -> GameState
-updateState _ = id
+updateState _ = moveSnake
 
 initSnake :: Vec2 -> [Vec2]
 initSnake screenSize = [screenSize // 2]
+
+moveSnake :: GameState -> GameState
+moveSnake = trimSnake . growSnake
+
+growSnake :: GameState -> GameState
+growSnake s = updateSnakeBody ((:) newHead) s
+    where newHead  = prevHead + direction s
+          prevHead = head $ snakeBody s
+
+trimSnake :: GameState -> GameState
+trimSnake s = updateSnakeBody trimSnake_ s
+    where trimSnake_ = take (snakeLength s)
+
+updateSnakeBody :: ([Vec2] -> [Vec2]) -> GameState -> GameState
+updateSnakeBody f s = GameState {
+    randomGen = randomGen s,
+    screenSize = screenSize s,
+    foodPosition = foodPosition s,
+    snakeLength = snakeLength s,
+    direction = direction s,
+
+    snakeBody = f $ snakeBody s
+}
 
 ---------------
 -- Side effects
@@ -60,7 +86,9 @@ initGame = do
             randomGen = randomGen2,
             screenSize = screenSize,
             foodPosition = initialFoodPosition,
-            snakeBody = initSnake screenSize
+            snakeBody = initSnake screenSize,
+            snakeLength = 5,
+            direction = Vec2 0 1
         }
 
 
