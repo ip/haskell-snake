@@ -13,7 +13,8 @@ data Vec2 = Vec2 {
 data GameState = GameState {
     randomGen :: StdGen,
     screenSize :: Vec2,
-    foodPosition :: Vec2
+    foodPosition :: Vec2,
+    snakeBody :: [Vec2]
 } deriving (Show)
 
 data Inputs = Inputs
@@ -37,16 +38,32 @@ runFrame state = do
     inputs <- getInputs
     let nextState = updateState inputs state in return nextState
 
+---------------
 -- Pure part
+---------------
 
 updateState :: Inputs -> GameState -> GameState
 updateState _ = id
+
+initSnake :: Vec2 -> [Vec2]
+initSnake screenSize = [screenSize // 2]
+
+-- Vec2
 
 addVec2 :: Vec2 -> Vec2 -> Vec2
 a `addVec2` b = Vec2 {
     x = x a + x b,
     y = y a + y b
 }
+
+infixl 7 //
+(//) :: Vec2 -> Int -> Vec2
+(//) v m = Vec2 {
+    x = x v `div` m,
+    y = y v `div` m
+}
+
+-- Random
 
 randomVec2 :: StdGen -> (Vec2, StdGen)
 randomVec2 g =
@@ -63,7 +80,9 @@ randomVec2Bounded g bound =
             y = y v `mod` y bound
         }, g2)
 
+---------------
 -- Side effects
+---------------
 
 initGame :: IO GameState
 initGame = do
@@ -74,7 +93,8 @@ initGame = do
         return GameState {
             randomGen = randomGen2,
             screenSize = screenSize,
-            foodPosition = initialFoodPosition
+            foodPosition = initialFoodPosition,
+            snakeBody = initSnake screenSize
         }
 
 
@@ -82,12 +102,21 @@ renderFrame :: GameState -> IO ()
 renderFrame state = do
     clearScreen
     drawFood state
+    drawSnake state
 
 drawFood :: GameState -> IO ()
-drawFood state = do
-    let Vec2 x y = foodPosition state in moveCursor x y
-    blotChar 'o'
+drawFood state = drawChar 'o' pos
+        where pos = foodPosition state
 
+drawSnake :: GameState -> IO ()
+drawSnake state = mapM_ drawLink snakeBody_
+        where snakeBody_ = snakeBody state
+              drawLink = drawChar '#'
+
+drawChar :: Char -> Vec2 -> IO ()
+drawChar char pos = do
+    moveCursor (x pos) (y pos)
+    blotChar char
 
 getInputs :: IO Inputs
 getInputs = return Inputs
