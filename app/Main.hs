@@ -2,6 +2,7 @@ module Main where
 
 import Control.Concurrent
 import Control.Monad
+import System.Random
 import HsCharm
 
 data Vec2 = Vec2 {
@@ -10,6 +11,7 @@ data Vec2 = Vec2 {
 } deriving (Show)
 
 data GameState = GameState {
+    randomGen :: StdGen,
     foodPosition :: Vec2
 } deriving (Show)
 
@@ -34,7 +36,7 @@ runFrame state = do
     inputs <- getInputs
     let nextState = updateState inputs state in return nextState
 
--- Pure game logic
+-- Pure part
 
 updateState :: Inputs -> GameState -> GameState
 updateState _ = id
@@ -45,14 +47,23 @@ a `addVec2` b = Vec2 {
     y = y a + y b
 }
 
+randomVec2 :: StdGen -> (Vec2, StdGen)
+randomVec2 g =
+    let (x, g2) = next g in
+    let (y, g3) = next g2 in
+        (Vec2 x y, g3)
+
 -- Side effects
 
 initGame :: IO GameState
 initGame = do
     startCharm
-    return GameState {
-        foodPosition = Vec2 5 5
-    }
+    randomGen <- getStdGen
+    let (initialFoodPosition, randomGen2) = randomVec2 randomGen in
+        return GameState {
+            randomGen = randomGen2,
+            foodPosition = initialFoodPosition
+        }
 
 
 renderFrame :: GameState -> IO ()

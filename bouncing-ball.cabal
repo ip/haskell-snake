@@ -46,6 +46,7 @@ executable bouncing-ball-exe
   build-depends:
       base >=4.7 && <5
     , hscharm == 0.0.2
+    , random >= 1.1
   default-language: Haskell2010
 
 test-suite bouncing-ball-test
