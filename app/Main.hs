@@ -8,12 +8,12 @@ data Vec2 = Vec2 { x :: Int
                  , y :: Int } deriving (Show)
 
 data GameState = GameState { position :: Vec2
-                           , velocity :: Vec2 }
+                           , velocity :: Vec2 } deriving (Show)
 
 data Inputs = Inputs { screenSize :: Vec2 }
 
 frameDelay = 50 * 1000 -- Microseconds
-initialState = GameState { position = Vec2 1 1
+initialState = GameState { position = Vec2 0 0
                          , velocity = Vec2 1 1 }
 
 main :: IO ()
@@ -49,9 +49,10 @@ bounceOffWalls :: Inputs -> GameState -> GameState
 bounceOffWalls inputs s =
     GameState {
         position = p,
-        velocity = if      x p == (w - 1) || x p == 0 then mulCoordsVec2 v (Vec2 (-1) 1)
-                   else if y p == (h - 1) || y p == 0 then mulCoordsVec2 v (Vec2 1 (-1))
-                   else    v
+        velocity = Vec2 {
+            x = if x p == (w - 1) || x p == 0 then -x v else x v,
+            y = if y p == (h - 1) || y p == 0 then -y v else y v
+        }
     }
         where v = velocity s
               p = position s
@@ -61,11 +62,6 @@ bounceOffWalls inputs s =
 addVec2 :: Vec2 -> Vec2 -> Vec2
 a `addVec2` b = Vec2 { x = x a + x b
                      , y = y a + y b }
-
--- Multiply each corresponding pair of coordinates of two vectors (like zip)
-mulCoordsVec2 :: Vec2 -> Vec2 -> Vec2
-mulCoordsVec2 a b = Vec2 { x = x a * x b
-                         , y = y a * y b }
 
 -- Side effects
 
