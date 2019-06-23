@@ -4,10 +4,14 @@ import Control.Concurrent
 import Control.Monad
 import HsCharm
 
-data Vec2 = Vec2 { x :: Int
-                 , y :: Int } deriving (Show)
+data Vec2 = Vec2 {
+    x :: Int,
+    y :: Int
+} deriving (Show)
 
-data GameState = GameState { foodPosition :: Vec2 } deriving (Show)
+data GameState = GameState {
+    foodPosition :: Vec2
+} deriving (Show)
 
 data Inputs = Inputs
 
@@ -36,8 +40,10 @@ updateState :: Inputs -> GameState -> GameState
 updateState _ = id
 
 addVec2 :: Vec2 -> Vec2 -> Vec2
-a `addVec2` b = Vec2 { x = x a + x b
-                     , y = y a + y b }
+a `addVec2` b = Vec2 {
+    x = x a + x b,
+    y = y a + y b
+}
 
 -- Side effects
 
