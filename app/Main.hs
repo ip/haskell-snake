@@ -36,12 +36,12 @@ runFrame state = do
 -- Pure game logic
 
 updateState :: Inputs -> GameState -> GameState
-updateState inputs = (bounceOffWalls inputs) . advancePosition
+updateState inputs = bounceOffWalls inputs . advancePosition
 
 advancePosition :: GameState -> GameState
 advancePosition s =
     GameState {
-        position = (position s) `addVec2` (velocity s),
+        position = position s `addVec2` velocity s,
         velocity = velocity s
     }
 
@@ -59,13 +59,13 @@ bounceOffWalls inputs s =
               h = y $ screenSize inputs
 
 addVec2 :: Vec2 -> Vec2 -> Vec2
-a `addVec2` b = Vec2 { x = (x a) + (x b)
-                     , y = (y a) + (y b) }
+a `addVec2` b = Vec2 { x = x a + x b
+                     , y = y a + y b }
 
 -- Multiply each corresponding pair of coordinates of two vectors (like zip)
 mulCoordsVec2 :: Vec2 -> Vec2 -> Vec2
-mulCoordsVec2 a b = Vec2 { x = (x a) * (x b)
-                         , y = (y a) * (y b) }
+mulCoordsVec2 a b = Vec2 { x = x a * x b
+                         , y = y a * y b }
 
 -- Side effects
 
