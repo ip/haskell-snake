@@ -9,6 +9,7 @@ import Snake.Io
 
 
 frameDelay = 500 * 1000 -- Microseconds
+fieldSize = Vec2 24 16
 
 main :: IO ()
 main = do
@@ -35,13 +36,11 @@ initGame :: IO GameState
 initGame = do
     initIo
     randomGen <- getStdGen
-    let (initialFoodPosition, randomGen2) = randomVec2 randomGen screenSize in
+    let (initialFoodPosition, randomGen2) = randomVec2 randomGen fieldSize in
         return GameState {
             randomGen = randomGen2,
-            screenSize = screenSize,
             foodPosition = initialFoodPosition,
-            snakeBody = initSnake screenSize,
+            snakeBody = initSnake fieldSize,
             snakeLength = 5,
             direction = Vec2 0 1
         }
-        where screenSize = Vec2 24 16

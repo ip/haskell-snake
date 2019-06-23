@@ -12,7 +12,6 @@ import Vec2
 
 data GameState = GameState {
     randomGen :: StdGen,
-    screenSize :: Vec2,
     foodPosition :: Vec2,
     -- Snake head is the list head
     snakeBody :: [Vec2],
@@ -38,7 +37,7 @@ keyToDirection (Just KeyLeft_) _  = Vec2 (-1) 0
 keyToDirection Nothing d         = d
 
 initSnake :: Vec2 -> [Vec2]
-initSnake screenSize = [screenSize // 2]
+initSnake fieldSize = [fieldSize // 2]
 
 moveSnake :: GameState -> GameState
 moveSnake = trimSnake . growSnake
@@ -57,7 +56,6 @@ trimSnake s = updateSnakeBody trimSnake_ s
 updateSnakeBody :: ([Vec2] -> [Vec2]) -> GameState -> GameState
 updateSnakeBody f s = GameState {
     randomGen = randomGen s,
-    screenSize = screenSize s,
     foodPosition = foodPosition s,
     snakeLength = snakeLength s,
     direction = direction s,
@@ -68,7 +66,6 @@ updateSnakeBody f s = GameState {
 updateDirection :: (Vec2 -> Vec2) -> GameState -> GameState
 updateDirection f s = GameState {
     randomGen = randomGen s,
-    screenSize = screenSize s,
     foodPosition = foodPosition s,
     snakeBody = snakeBody s,
     snakeLength = snakeLength s,
