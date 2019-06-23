@@ -53,13 +53,23 @@ randomVec2 g =
     let (y, g3) = next g2 in
         (Vec2 x y, g3)
 
+-- Returns random Vec2 with coordinates less than in the provided Vec2
+randomVec2Bounded :: StdGen -> Vec2 -> (Vec2, StdGen)
+randomVec2Bounded g bound =
+    let (v, g2) = randomVec2 g in
+        (Vec2 {
+            x = x v `mod` x bound,
+            y = y v `mod` y bound
+        }, g2)
+
 -- Side effects
 
 initGame :: IO GameState
 initGame = do
     startCharm
+    screenSize <- getScreenSize
     randomGen <- getStdGen
-    let (initialFoodPosition, randomGen2) = randomVec2 randomGen in
+    let (initialFoodPosition, randomGen2) = randomVec2Bounded randomGen screenSize in
         return GameState {
             randomGen = randomGen2,
             foodPosition = initialFoodPosition
