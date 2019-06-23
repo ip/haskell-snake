@@ -7,18 +7,15 @@ import HsCharm
 data Vec2 = Vec2 { x :: Int
                  , y :: Int } deriving (Show)
 
-data GameState = GameState { position :: Vec2
-                           , velocity :: Vec2 } deriving (Show)
+data GameState = GameState { foodPosition :: Vec2 } deriving (Show)
 
-data Inputs = Inputs { screenSize :: Vec2 }
+data Inputs = Inputs
 
-frameDelay = 50 * 1000 -- Microseconds
-initialState = GameState { position = Vec2 0 0
-                         , velocity = Vec2 1 1 }
+frameDelay = 500 * 1000 -- Microseconds
 
 main :: IO ()
 main = do
-    initGame
+    initialState <- initGame
     runLoop initialState
 
 runLoop :: GameState -> IO ()
@@ -36,31 +33,7 @@ runFrame state = do
 -- Pure game logic
 
 updateState :: Inputs -> GameState -> GameState
-updateState inputs = bounceOffWalls inputs . advancePosition
-
-advancePosition :: GameState -> GameState
-advancePosition s =
-    GameState {
-        position = position s `addVec2` velocity s,
-        velocity = velocity s
-    }
-
-bounceOffWalls :: Inputs -> GameState -> GameState
-bounceOffWalls inputs s =
-    GameState {
-        position = p,
-        velocity = Vec2 {
-            x = if isAtBorder (x p) w then -x v else x v,
-            y = if isAtBorder (y p) h then -y v else y v
-        }
-    }
-        where v = velocity s
-              p = position s
-              w = x $ screenSize inputs
-              h = y $ screenSize inputs
-
-isAtBorder :: Int -> Int -> Bool
-isAtBorder i size = i == (size - 1) || i == 0
+updateState _ = id
 
 addVec2 :: Vec2 -> Vec2 -> Vec2
 a `addVec2` b = Vec2 { x = x a + x b
@@ -68,17 +41,27 @@ a `addVec2` b = Vec2 { x = x a + x b
 
 -- Side effects
 
-initGame :: IO ()
-initGame = startCharm
+initGame :: IO GameState
+initGame = do
+    startCharm
+    return GameState {
+        foodPosition = Vec2 5 5
+    }
+
 
 renderFrame :: GameState -> IO ()
 renderFrame state = do
     clearScreen
-    let Vec2 x y = position state in moveCursor x y
+    drawFood state
+
+drawFood :: GameState -> IO ()
+drawFood state = do
+    let Vec2 x y = foodPosition state in moveCursor x y
     blotChar 'o'
 
+
 getInputs :: IO Inputs
-getInputs = fmap Inputs getScreenSize
+getInputs = return Inputs
 
 getScreenSize :: IO Vec2
 getScreenSize = do
