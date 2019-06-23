@@ -1,7 +1,6 @@
 module Main where
 
 import Control.Concurrent
-import Control.Monad
 import System.Random
 import Vec2
 import Vec2.Random
