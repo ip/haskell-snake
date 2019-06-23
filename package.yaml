@@ -35,6 +35,8 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - bouncing-ball
+    - hscharm
+    - random
 
 tests:
   bouncing-ball-test:
