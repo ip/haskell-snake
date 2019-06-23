@@ -2,8 +2,9 @@ module Snake.Core (
     GameState (..),
     Key_ (..),
     Inputs (..),
+    fieldSize,
     initSnake,
-    updateState
+    updateState,
 ) where
 
 import System.Random (StdGen)
@@ -18,6 +19,8 @@ data GameState = GameState {
     snakeLength :: Int,
     direction :: Vec2
 } deriving (Show)
+
+fieldSize = Vec2 24 18
 
 data Key_ = KeyLeft_ | KeyRight_ | KeyUp_ | KeyDown_
 data Inputs = Inputs (Maybe Key_)

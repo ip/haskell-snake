@@ -9,32 +9,27 @@ import Snake.Io
 
 
 frameDelay = 500 * 1000 -- Microseconds
-fieldSize = Vec2 24 16
 
 main :: IO ()
 main = do
+    snakeIo <- initIo
     initialState <- initGame
-    runLoop initialState
+    runLoop initialState snakeIo
 
-runLoop :: GameState -> IO ()
-runLoop prevState = do
-    nextState <- runFrame prevState
+runLoop :: GameState -> SnakeIo -> IO ()
+runLoop prevState io = do
+    nextState <- runFrame prevState io
     threadDelay frameDelay
-    runLoop nextState
+    runLoop nextState io
 
-runFrame :: GameState -> IO GameState
-runFrame state = do
-    drawFrame state
-    inputs <- getInputs
+runFrame :: GameState -> SnakeIo -> IO GameState
+runFrame state io = do
+    drawFrame io state
+    inputs <- getInputs io
     let nextState = updateState inputs state in return nextState
-
----------------
--- Side effects
----------------
 
 initGame :: IO GameState
 initGame = do
-    initIo
     randomGen <- getStdGen
     let (initialFoodPosition, randomGen2) = randomVec2 randomGen fieldSize in
         return GameState {

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 632dea63d6c0ac5b39bb9eeeb1b06592b2a3c6c0123c655a77f337533ea5401a
+-- hash: 834e23d7121865f29c4e322a44d8d9ba4b4aa537ce26fe230cc4d687b8c63d60
 
 name:           bouncing-ball
 version:        0.1.0.0
@@ -37,8 +37,8 @@ library
       src
   build-depends:
       base >=4.7 && <5
-    , hscharm
     , random
+    , sdl2
   default-language: Haskell2010
 
 executable bouncing-ball-exe
