@@ -12,6 +12,7 @@ data Vec2 = Vec2 {
 
 data GameState = GameState {
     randomGen :: StdGen,
+    screenSize :: Vec2,
     foodPosition :: Vec2
 } deriving (Show)
 
@@ -72,6 +73,7 @@ initGame = do
     let (initialFoodPosition, randomGen2) = randomVec2Bounded randomGen screenSize in
         return GameState {
             randomGen = randomGen2,
+            screenSize = screenSize,
             foodPosition = initialFoodPosition
         }
 
