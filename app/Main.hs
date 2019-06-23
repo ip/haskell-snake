@@ -54,7 +54,7 @@ runLoop prevState = do
 
 runFrame :: GameState -> IO GameState
 runFrame state = do
-    renderFrame state
+    drawFrame state
     inputs <- getInputs
     let nextState = updateState inputs state in return nextState
 
@@ -103,8 +103,8 @@ initGame = do
         }
 
 
-renderFrame :: GameState -> IO ()
-renderFrame state = do
+drawFrame :: GameState -> IO ()
+drawFrame state = do
     clearScreen
     drawFood state
     drawSnake state
