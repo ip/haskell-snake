@@ -18,7 +18,7 @@ data GameState = GameState {
     direction :: Vec2
 } deriving (Show)
 
-data Inputs = Inputs
+data Inputs = Inputs Key
 
 frameDelay = 500 * 1000 -- Microseconds
 
@@ -44,7 +44,17 @@ runFrame state = do
 ---------------
 
 updateState :: Inputs -> GameState -> GameState
-updateState _ = moveSnake
+updateState i = moveSnake . updateDirection_ i
+
+updateDirection_ :: Inputs -> GameState -> GameState
+updateDirection_ (Inputs key) = updateDirection $ keyToDirection key
+
+keyToDirection :: Key -> Vec2 -> Vec2
+keyToDirection KeyUp _    = Vec2 0    (-1)
+keyToDirection KeyDown _  = Vec2 0    1
+keyToDirection KeyRight _ = Vec2 1    0
+keyToDirection KeyLeft _  = Vec2 (-1) 0
+keyToDirection _ d = d
 
 initSnake :: Vec2 -> [Vec2]
 initSnake screenSize = [screenSize // 2]
@@ -61,6 +71,8 @@ trimSnake :: GameState -> GameState
 trimSnake s = updateSnakeBody trimSnake_ s
     where trimSnake_ = take (snakeLength s)
 
+-- Setters
+
 updateSnakeBody :: ([Vec2] -> [Vec2]) -> GameState -> GameState
 updateSnakeBody f s = GameState {
     randomGen = randomGen s,
@@ -70,6 +82,17 @@ updateSnakeBody f s = GameState {
     direction = direction s,
 
     snakeBody = f $ snakeBody s
+}
+
+updateDirection :: (Vec2 -> Vec2) -> GameState -> GameState
+updateDirection f s = GameState {
+    randomGen = randomGen s,
+    screenSize = screenSize s,
+    foodPosition = foodPosition s,
+    snakeBody = snakeBody s,
+    snakeLength = snakeLength s,
+
+    direction = f $ direction s
 }
 
 ---------------
@@ -113,7 +136,7 @@ drawChar char pos = do
     blotChar char
 
 getInputs :: IO Inputs
-getInputs = return Inputs
+getInputs = fmap Inputs getKey
 
 getScreenSize :: IO Vec2
 getScreenSize = do
