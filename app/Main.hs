@@ -81,7 +81,6 @@ renderFrame state = do
 getInputs :: IO Inputs
 getInputs = fmap Inputs getScreenSize
 
-{-# ANN module "HLint: Use <$>" #-}
 getScreenSize :: IO Vec2
 getScreenSize = do
     w <- getWidth
