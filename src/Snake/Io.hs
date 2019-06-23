@@ -1,6 +1,5 @@
 module Snake.Io (
     initIo,
-    getScreenSize,
     drawFrame,
     getInputs
 ) where
@@ -13,12 +12,6 @@ import HsCharm
 
 initIo :: IO ()
 initIo = startCharm
-
-getScreenSize :: IO Vec2
-getScreenSize = do
-    w <- getWidth
-    h <- getHeight
-    return $ Vec2 w h
 
 drawFrame :: GameState -> IO ()
 drawFrame state = do

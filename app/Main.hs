@@ -35,7 +35,6 @@ runFrame state = do
 initGame :: IO GameState
 initGame = do
     initIo
-    screenSize <- getScreenSize
     randomGen <- getStdGen
     let (initialFoodPosition, randomGen2) = randomVec2 randomGen screenSize in
         return GameState {
@@ -46,3 +45,4 @@ initGame = do
             snakeLength = 5,
             direction = Vec2 0 1
         }
+        where screenSize = Vec2 24 16
