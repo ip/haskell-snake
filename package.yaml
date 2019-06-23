@@ -26,6 +26,7 @@ library:
   source-dirs: src
   dependencies:
     - random
+    - hscharm
 
 executables:
   bouncing-ball-exe:
@@ -37,7 +38,6 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - bouncing-ball
-    - hscharm
     - random
 
 tests:
