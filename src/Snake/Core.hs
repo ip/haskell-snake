@@ -30,7 +30,20 @@ data Direction = DirectionLeft | DirectionRight | DirectionUp | DirectionDown
 
 
 updateState :: Inputs -> GameState -> GameState
-updateState i = moveSnake . updateDirection_ i
+updateState i = eatFood . moveSnake . updateDirection_ i
+
+
+eatFood :: GameState -> GameState
+eatFood = growSnakeOnEat
+
+growSnakeOnEat :: GameState -> GameState
+growSnakeOnEat s
+    | isAtFood s = updateSnakeLength (+1) s
+    | otherwise  = s
+
+isAtFood :: GameState -> Bool
+isAtFood s = snakeHead s == foodPosition s
+
 
 updateDirection_ :: Inputs -> GameState -> GameState
 updateDirection_ (Inputs dir) = updateDirection $ updateDirectionOnInput dir
@@ -50,12 +63,14 @@ moveSnake = trimSnake . growSnake
 
 growSnake :: GameState -> GameState
 growSnake s = updateSnakeBody ((:) newHead) s
-    where newHead  = prevHead + direction s
-          prevHead = head $ snakeBody s
+    where newHead  = snakeHead s + direction s
 
 trimSnake :: GameState -> GameState
 trimSnake s = updateSnakeBody trimSnake_ s
     where trimSnake_ = take (snakeLength s)
+
+snakeHead :: GameState -> V2 Int
+snakeHead = head . snakeBody
 
 -- Setters
 
@@ -77,4 +92,14 @@ updateDirection f s = GameState {
     snakeLength = snakeLength s,
 
     direction = f $ direction s
+}
+
+updateSnakeLength :: (Int -> Int) -> GameState -> GameState
+updateSnakeLength f s = GameState {
+    randomGen = randomGen s,
+    foodPosition = foodPosition s,
+    snakeBody = snakeBody s,
+    direction = direction s,
+
+    snakeLength = f $ snakeLength s
 }
