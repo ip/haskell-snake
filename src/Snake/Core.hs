@@ -40,7 +40,7 @@ initState randomGen = respawnFood $ GameState {
 }
 
 updateState :: Inputs -> GameState -> GameState
-updateState i = dieOnCollision . eatFood . moveSnake . updateDirection_ i
+updateState i = dieOnCollision . eatFood . moveSnake . updateDirectionOnInput i
 
 -- Internal
 
@@ -67,15 +67,16 @@ isAtFood :: GameState -> Bool
 isAtFood s = snakeHead s == foodPosition s
 
 
-updateDirection_ :: Inputs -> GameState -> GameState
-updateDirection_ (Inputs dir) = updateDirection $ updateDirectionOnInput dir
+updateDirectionOnInput :: Inputs -> GameState -> GameState
+updateDirectionOnInput (Inputs (Just dir)) =
+    updateDirection $ const $ directionToVec dir
+updateDirectionOnInput (Inputs Nothing)    = id
 
-updateDirectionOnInput :: Maybe Direction -> V2 Int -> V2 Int
-updateDirectionOnInput (Just DirectionUp) _    = V2 0    (-1)
-updateDirectionOnInput (Just DirectionDown) _  = V2 0    1
-updateDirectionOnInput (Just DirectionRight) _ = V2 1    0
-updateDirectionOnInput (Just DirectionLeft) _  = V2 (-1) 0
-updateDirectionOnInput Nothing d               = d
+directionToVec :: Direction -> V2 Int
+directionToVec DirectionUp    = V2 0    (-1)
+directionToVec DirectionDown  = V2 0    1
+directionToVec DirectionRight = V2 1    0
+directionToVec DirectionLeft  = V2 (-1) 0
 
 initSnake :: V2 Int -> [V2 Int]
 initSnake fieldSize = [(`div` 2) <$> fieldSize]
