@@ -1,10 +1,9 @@
 module Snake.Core (
     GameState (..),
-    Direction (..),
     Inputs (..),
+    Direction (..),
     fieldSize,
-    initSnake,
-    initFood,
+    initState,
     updateState
 ) where
 
@@ -12,6 +11,7 @@ import System.Random (StdGen)
 import Snake.RandomVec
 import SDL.Vect (V2 (..))
 
+-- Public
 
 data GameState = GameState {
     randomGen :: StdGen,
@@ -22,20 +22,27 @@ data GameState = GameState {
     direction :: V2 Int
 } deriving (Show)
 
-fieldSize :: V2 Int
-fieldSize = V2 24 18
-
 -- Inputs from a given frame
 data Inputs = Inputs (Maybe Direction)
 
 data Direction = DirectionLeft | DirectionRight | DirectionUp | DirectionDown
 
+fieldSize :: V2 Int
+fieldSize = V2 24 18
+
+initState :: StdGen -> GameState
+initState randomGen = respawnFood $ GameState {
+    randomGen = randomGen,
+    foodPosition = V2 0 0,
+    snakeBody = initSnake fieldSize,
+    snakeLength = 5,
+    direction = V2 0 1
+}
 
 updateState :: Inputs -> GameState -> GameState
 updateState i = eatFood . moveSnake . updateDirection_ i
 
-initFood :: GameState -> GameState
-initFood = respawnFood
+-- Internal
 
 eatFood :: GameState -> GameState
 eatFood = respawnFoodOnEat . growSnakeOnEat
