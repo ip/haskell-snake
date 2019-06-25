@@ -102,7 +102,7 @@ dieOnCollision s
         | otherwise = s
 
 isCollidingWithSelf :: GameState -> Bool
-isCollidingWithSelf s = elem (snakeHead s) bodyExceptHead
+isCollidingWithSelf s = snakeHead s `elem` bodyExceptHead
     where bodyExceptHead = drop 1 $ snakeBody s
 
 restartGame :: GameState -> GameState
