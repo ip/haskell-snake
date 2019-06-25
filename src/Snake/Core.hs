@@ -32,7 +32,7 @@ updateState :: Inputs -> GameState -> GameState
 updateState i = moveSnake . updateDirection_ i
 
 updateDirection_ :: Inputs -> GameState -> GameState
-updateDirection_ (Inputs key) = updateDirection $ directionToVec key
+updateDirection_ (Inputs dir) = updateDirection $ directionToVec dir
 
 directionToVec :: Maybe Direction -> Vec2 -> Vec2
 directionToVec (Just DirectionUp) _    = Vec2 0    (-1)

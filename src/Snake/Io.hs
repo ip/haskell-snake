@@ -54,14 +54,12 @@ drawFrame_ ioState state = do
         where renderer = renderer_ ioState
 
 getInputs_ :: IO Inputs
-getInputs_ = do
-    events <- pollEvents
-    let eventPayloads = eventPayload <$> events in
-        let eventsFiltered = filter (\e -> isKeyboardEvent e && isPressed e) eventPayloads in
-            return $ case eventsFiltered of
-                [] -> Inputs Nothing
-                _  -> (keyboardEventToInputs . last) eventsFiltered
+getInputs_ = Inputs . (>>= keyboardEventToInputs) . maybeLast .
+    filter isPressed . filter isKeyboardEvent . map eventPayload <$> pollEvents
 
+maybeLast :: [a] -> Maybe a
+maybeLast [] = Nothing
+maybeLast xs = Just $ last xs
 
 isKeyboardEvent :: EventPayload -> Bool
 isKeyboardEvent (KeyboardEvent _) = True
@@ -71,16 +69,17 @@ isPressed :: EventPayload -> Bool
 isPressed (KeyboardEvent keyboardEvent) =
     keyboardEventKeyMotion keyboardEvent == Pressed
 
-keyboardEventToInputs :: EventPayload -> Inputs
+keyboardEventToInputs :: EventPayload -> Maybe Direction
 keyboardEventToInputs (KeyboardEvent keyboardEvent) =
-    Inputs $ scanCodeToKey $ keysymScancode (keyboardEventKeysym keyboardEvent)
+    scanCodeToDirection $ keysymScancode (keyboardEventKeysym keyboardEvent)
 
-scanCodeToKey :: Scancode -> Maybe Direction
-scanCodeToKey ScancodeRight = Just DirectionRight
-scanCodeToKey ScancodeDown  = Just DirectionDown
-scanCodeToKey ScancodeLeft  = Just DirectionLeft
-scanCodeToKey ScancodeUp    = Just DirectionUp
-scanCodeToKey _             = Nothing
+scanCodeToDirection :: Scancode -> Maybe Direction
+scanCodeToDirection ScancodeRight = Just DirectionRight
+scanCodeToDirection ScancodeDown  = Just DirectionDown
+scanCodeToDirection ScancodeLeft  = Just DirectionLeft
+scanCodeToDirection ScancodeUp    = Just DirectionUp
+scanCodeToDirection _             = Nothing
+
 
 drawFood :: IoState -> GameState -> IO ()
 drawFood ioState state = drawTile ioState color pos
