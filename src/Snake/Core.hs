@@ -8,19 +8,20 @@ module Snake.Core (
 ) where
 
 import System.Random (StdGen)
-import Vec2
+import SDL.Vect (V2 (..))
 
 
 data GameState = GameState {
     randomGen :: StdGen,
-    foodPosition :: Vec2,
+    foodPosition :: V2 Int,
     -- Snake head is the list head
-    snakeBody :: [Vec2],
+    snakeBody :: [V2 Int],
     snakeLength :: Int,
-    direction :: Vec2
+    direction :: V2 Int
 } deriving (Show)
 
-fieldSize = Vec2 24 18
+fieldSize :: V2 Int
+fieldSize = V2 24 18
 
 -- Inputs from a given frame
 data Inputs = Inputs (Maybe Direction)
@@ -32,17 +33,17 @@ updateState :: Inputs -> GameState -> GameState
 updateState i = moveSnake . updateDirection_ i
 
 updateDirection_ :: Inputs -> GameState -> GameState
-updateDirection_ (Inputs dir) = updateDirection $ directionToVec dir
+updateDirection_ (Inputs dir) = updateDirection $ updateDirectionOnInput dir
 
-directionToVec :: Maybe Direction -> Vec2 -> Vec2
-directionToVec (Just DirectionUp) _    = Vec2 0    (-1)
-directionToVec (Just DirectionDown) _  = Vec2 0    1
-directionToVec (Just DirectionRight) _ = Vec2 1    0
-directionToVec (Just DirectionLeft) _  = Vec2 (-1) 0
-directionToVec Nothing d         = d
+updateDirectionOnInput :: Maybe Direction -> V2 Int -> V2 Int
+updateDirectionOnInput (Just DirectionUp) _    = V2 0    (-1)
+updateDirectionOnInput (Just DirectionDown) _  = V2 0    1
+updateDirectionOnInput (Just DirectionRight) _ = V2 1    0
+updateDirectionOnInput (Just DirectionLeft) _  = V2 (-1) 0
+updateDirectionOnInput Nothing d               = d
 
-initSnake :: Vec2 -> [Vec2]
-initSnake fieldSize = [fieldSize // 2]
+initSnake :: V2 Int -> [V2 Int]
+initSnake fieldSize = [(`div` 2) <$> fieldSize]
 
 moveSnake :: GameState -> GameState
 moveSnake = trimSnake . growSnake
@@ -58,7 +59,7 @@ trimSnake s = updateSnakeBody trimSnake_ s
 
 -- Setters
 
-updateSnakeBody :: ([Vec2] -> [Vec2]) -> GameState -> GameState
+updateSnakeBody :: ([V2 Int] -> [V2 Int]) -> GameState -> GameState
 updateSnakeBody f s = GameState {
     randomGen = randomGen s,
     foodPosition = foodPosition s,
@@ -68,7 +69,7 @@ updateSnakeBody f s = GameState {
     snakeBody = f $ snakeBody s
 }
 
-updateDirection :: (Vec2 -> Vec2) -> GameState -> GameState
+updateDirection :: (V2 Int -> V2 Int) -> GameState -> GameState
 updateDirection f s = GameState {
     randomGen = randomGen s,
     foodPosition = foodPosition s,

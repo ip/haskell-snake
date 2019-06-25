@@ -2,10 +2,10 @@ module Main where
 
 import Control.Concurrent
 import System.Random
-import Vec2
-import Vec2.Random
 import Snake.Core
 import Snake.Io
+import Snake.RandomVec
+import SDL.Vect (V2 (..))
 
 
 frameDelay = 300 * 1000 -- Microseconds
@@ -31,11 +31,11 @@ runFrame state io = do
 initGame :: IO GameState
 initGame = do
     randomGen <- getStdGen
-    let (initialFoodPosition, randomGen2) = randomVec2 randomGen fieldSize in
+    let (initialFoodPosition, randomGen2) = randomV2 randomGen fieldSize in
         return GameState {
             randomGen = randomGen2,
             foodPosition = initialFoodPosition,
             snakeBody = initSnake fieldSize,
             snakeLength = 5,
-            direction = Vec2 0 1
+            direction = V2 0 1
         }

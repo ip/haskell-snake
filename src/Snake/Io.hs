@@ -8,10 +8,9 @@ module Snake.Io (
 
 import Control.Applicative
 import GHC.Word (Word8)
-import Vec2
 import Snake.Core
 import SDL
-import SDL.Vect
+import SDL.Vect (V2 (..))
 
 -- Exported
 
@@ -82,11 +81,11 @@ scanCodeToDirection _             = Nothing
 
 drawFood :: IoState -> GameState -> IO ()
 drawFood ioState state = drawTile ioState color pos
-        where pos = vec2ToV2 $ foodPosition state
+        where pos = foodPosition state
               color = V4 255 255 0 255
 
 drawSnake :: IoState -> GameState -> IO ()
-drawSnake ioState state = mapM_ (drawLink . vec2ToV2) snakeBody_
+drawSnake ioState state = mapM_ drawLink snakeBody_
         where snakeBody_ = snakeBody state
               drawLink = drawTile ioState color
               color = V4 0 0 255 255
@@ -107,12 +106,7 @@ rectToWindowSpace winSize rect =
             where vecToWindowSpace_ = vecToWindowSpace winSize
 
 vecToWindowSpace :: V2 Int -> V2 Int -> V2 Int
-vecToWindowSpace winSize vec = (vec * winSize) `divV2` fieldSize_
-        where fieldSize_ = vec2ToV2 fieldSize
+vecToWindowSpace winSize vec = (vec * winSize) `divV2` fieldSize
 
 divV2 :: V2 Int -> V2 Int -> V2 Int
 divV2 = liftA2 div
-
-vec2ToV2 :: Vec2 -> V2 Int
-vec2ToV2 v = V2 x y
-    where Vec2 x y = v
