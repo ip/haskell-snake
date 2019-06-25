@@ -35,12 +35,12 @@ initState randomGen = respawnFood $ GameState {
     randomGen = randomGen,
     foodPosition = V2 0 0,
     snakeBody = initSnake fieldSize,
-    snakeLength = 5,
+    snakeLength = 1,
     direction = V2 0 1
 }
 
 updateState :: Inputs -> GameState -> GameState
-updateState i = eatFood . moveSnake . updateDirection_ i
+updateState i = dieOnCollision . eatFood . moveSnake . updateDirection_ i
 
 -- Internal
 
@@ -94,6 +94,19 @@ trimSnake s = updateSnakeBody trimSnake_ s
 snakeHead :: GameState -> V2 Int
 snakeHead = head . snakeBody
 
+
+dieOnCollision :: GameState -> GameState
+dieOnCollision s
+        | isCollidingWithSelf s = restartGame s
+        | otherwise = s
+
+isCollidingWithSelf :: GameState -> Bool
+isCollidingWithSelf s = elem (snakeHead s) bodyExceptHead
+    where bodyExceptHead = drop 1 $ snakeBody s
+
+restartGame :: GameState -> GameState
+restartGame s = initState randomGen_
+    where randomGen_ = randomGen s
 
 -- Setters
 
