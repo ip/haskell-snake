@@ -29,12 +29,10 @@ runFrame state io = do
     let nextState = updateState inputs state in return nextState
 
 initGame :: IO GameState
-initGame = do
-    randomGen <- getStdGen
-    return $ initFood $ GameState {
-        randomGen = randomGen,
-        foodPosition = V2 0 0,
-        snakeBody = initSnake fieldSize,
-        snakeLength = 5,
-        direction = V2 0 1
-    }
+initGame = (\randomGen -> initFood $ GameState {
+    randomGen = randomGen,
+    foodPosition = V2 0 0,
+    snakeBody = initSnake fieldSize,
+    snakeLength = 5,
+    direction = V2 0 1
+}) <$> getStdGen
