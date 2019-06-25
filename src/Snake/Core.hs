@@ -25,7 +25,7 @@ fieldSize = Vec2 24 18
 -- Inputs from a given frame
 data Inputs = Inputs (Maybe Direction)
 
-data Direction = KeyLeft_ | KeyRight_ | KeyUp_ | KeyDown_
+data Direction = DirectionLeft | DirectionRight | DirectionUp | DirectionDown
 
 
 updateState :: Inputs -> GameState -> GameState
@@ -35,10 +35,10 @@ updateDirection_ :: Inputs -> GameState -> GameState
 updateDirection_ (Inputs key) = updateDirection $ directionToVec key
 
 directionToVec :: Maybe Direction -> Vec2 -> Vec2
-directionToVec (Just KeyUp_) _    = Vec2 0    (-1)
-directionToVec (Just KeyDown_) _  = Vec2 0    1
-directionToVec (Just KeyRight_) _ = Vec2 1    0
-directionToVec (Just KeyLeft_) _  = Vec2 (-1) 0
+directionToVec (Just DirectionUp) _    = Vec2 0    (-1)
+directionToVec (Just DirectionDown) _  = Vec2 0    1
+directionToVec (Just DirectionRight) _ = Vec2 1    0
+directionToVec (Just DirectionLeft) _  = Vec2 (-1) 0
 directionToVec Nothing d         = d
 
 initSnake :: Vec2 -> [Vec2]

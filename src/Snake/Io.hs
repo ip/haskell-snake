@@ -76,10 +76,10 @@ keyboardEventToInputs (KeyboardEvent keyboardEvent) =
     Inputs $ scanCodeToKey $ keysymScancode (keyboardEventKeysym keyboardEvent)
 
 scanCodeToKey :: Scancode -> Maybe Direction
-scanCodeToKey ScancodeRight = Just KeyRight_
-scanCodeToKey ScancodeDown  = Just KeyDown_
-scanCodeToKey ScancodeLeft  = Just KeyLeft_
-scanCodeToKey ScancodeUp    = Just KeyUp_
+scanCodeToKey ScancodeRight = Just DirectionRight
+scanCodeToKey ScancodeDown  = Just DirectionDown
+scanCodeToKey ScancodeLeft  = Just DirectionLeft
+scanCodeToKey ScancodeUp    = Just DirectionUp
 scanCodeToKey _             = Nothing
 
 drawFood :: IoState -> GameState -> IO ()
