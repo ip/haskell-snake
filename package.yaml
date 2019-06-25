@@ -27,6 +27,7 @@ library:
   dependencies:
     - random
     - sdl2
+    - text
 
 executables:
   bouncing-ball-exe:

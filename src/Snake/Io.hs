@@ -11,6 +11,8 @@ import GHC.Word (Word8)
 import Snake.Core
 import SDL
 import SDL.Vect (V2 (..))
+import SDL.Video.Renderer
+import qualified Data.Text as Text
 
 -- Exported
 
@@ -23,6 +25,10 @@ initIo = do
     initializeAll
     window <- createWindow "Haskell Snake" defaultWindow
     renderer <- createRenderer window (-1) defaultRenderer
+
+    putStrLn ""
+    logRendererInfo renderer
+
     let ioState = IoState {
         window_ = window,
         renderer_ = renderer,
@@ -30,6 +36,12 @@ initIo = do
     } in return SnakeIo {
         drawFrame = drawFrame_ ioState
     }
+
+logRendererInfo :: Renderer -> IO ()
+logRendererInfo renderer = do
+    rendererInfo <- getRendererInfo renderer
+    let rendererName = Text.unpack $ rendererInfoName rendererInfo in
+        putStrLn $ "Using renderer: " ++ rendererName
 
 getInputs :: IO Inputs
 getInputs = Inputs . (>>= keyboardEventToInputs) . maybeLast .
