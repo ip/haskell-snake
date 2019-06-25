@@ -2,6 +2,7 @@
 
 module Snake.Io (
     initIo,
+    getInputs,
     SnakeIo (..)
 ) where
 
@@ -15,8 +16,7 @@ import SDL.Vect
 -- Exported
 
 data SnakeIo = SnakeIo {
-    drawFrame :: GameState -> IO (),
-    getInputs :: IO Inputs
+    drawFrame :: GameState -> IO ()
 }
 
 initIo :: IO SnakeIo
@@ -29,9 +29,12 @@ initIo = do
         renderer_ = renderer,
         windowSize_ = fromIntegral <$> windowInitialSize defaultWindow
     } in return SnakeIo {
-        drawFrame = drawFrame_ ioState,
-        getInputs = getInputs_
+        drawFrame = drawFrame_ ioState
     }
+
+getInputs :: IO Inputs
+getInputs = Inputs . (>>= keyboardEventToInputs) . maybeLast .
+    filter isPressed . filter isKeyboardEvent . map eventPayload <$> pollEvents
 
 
 -- Internal
@@ -52,10 +55,6 @@ drawFrame_ ioState state = do
 
     present renderer
         where renderer = renderer_ ioState
-
-getInputs_ :: IO Inputs
-getInputs_ = Inputs . (>>= keyboardEventToInputs) . maybeLast .
-    filter isPressed . filter isKeyboardEvent . map eventPayload <$> pollEvents
 
 maybeLast :: [a] -> Maybe a
 maybeLast [] = Nothing

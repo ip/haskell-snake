@@ -25,7 +25,7 @@ runLoop prevState io = do
 runFrame :: GameState -> SnakeIo -> IO GameState
 runFrame state io = do
     drawFrame io state
-    inputs <- getInputs io
+    inputs <- getInputs
     let nextState = updateState inputs state in return nextState
 
 initGame :: IO GameState
