@@ -4,10 +4,12 @@ module Snake.Core (
     Inputs (..),
     fieldSize,
     initSnake,
-    updateState,
+    initFood,
+    updateState
 ) where
 
 import System.Random (StdGen)
+import Snake.RandomVec
 import SDL.Vect (V2 (..))
 
 
@@ -32,14 +34,27 @@ data Direction = DirectionLeft | DirectionRight | DirectionUp | DirectionDown
 updateState :: Inputs -> GameState -> GameState
 updateState i = eatFood . moveSnake . updateDirection_ i
 
+initFood :: GameState -> GameState
+initFood = respawnFood
 
 eatFood :: GameState -> GameState
-eatFood = growSnakeOnEat
+eatFood = respawnFoodOnEat . growSnakeOnEat
 
 growSnakeOnEat :: GameState -> GameState
 growSnakeOnEat s
     | isAtFood s = updateSnakeLength (+1) s
     | otherwise  = s
+
+respawnFoodOnEat :: GameState -> GameState
+respawnFoodOnEat s
+    | isAtFood s = respawnFood s
+    | otherwise  = s
+
+respawnFood :: GameState -> GameState
+respawnFood s =
+    let (newPos, newRandomGen) = randomV2 (randomGen s) fieldSize in
+        updateFoodPosition (const newPos) $
+        updateRandomGen (const newRandomGen) s
 
 isAtFood :: GameState -> Bool
 isAtFood s = snakeHead s == foodPosition s
@@ -72,6 +87,7 @@ trimSnake s = updateSnakeBody trimSnake_ s
 snakeHead :: GameState -> V2 Int
 snakeHead = head . snakeBody
 
+
 -- Setters
 
 updateSnakeBody :: ([V2 Int] -> [V2 Int]) -> GameState -> GameState
@@ -102,4 +118,24 @@ updateSnakeLength f s = GameState {
     direction = direction s,
 
     snakeLength = f $ snakeLength s
+}
+
+updateFoodPosition :: (V2 Int -> V2 Int) -> GameState -> GameState
+updateFoodPosition f s = GameState {
+    randomGen = randomGen s,
+    snakeBody = snakeBody s,
+    direction = direction s,
+    snakeLength = snakeLength s,
+
+    foodPosition = f $ foodPosition s
+}
+
+updateRandomGen :: (StdGen -> StdGen) -> GameState -> GameState
+updateRandomGen f s = GameState {
+    foodPosition = foodPosition s,
+    snakeBody = snakeBody s,
+    direction = direction s,
+    snakeLength = snakeLength s,
+
+    randomGen = f $ randomGen s
 }

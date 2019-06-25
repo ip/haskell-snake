@@ -8,7 +8,7 @@ import Snake.RandomVec
 import SDL.Vect (V2 (..))
 
 
-frameDelay = 300 * 1000 -- Microseconds
+frameDelay = 200 * 1000 -- Microseconds
 
 main :: IO ()
 main = do
@@ -31,11 +31,10 @@ runFrame state io = do
 initGame :: IO GameState
 initGame = do
     randomGen <- getStdGen
-    let (initialFoodPosition, randomGen2) = randomV2 randomGen fieldSize in
-        return GameState {
-            randomGen = randomGen2,
-            foodPosition = initialFoodPosition,
-            snakeBody = initSnake fieldSize,
-            snakeLength = 5,
-            direction = V2 0 1
-        }
+    return $ initFood $ GameState {
+        randomGen = randomGen,
+        foodPosition = V2 0 0,
+        snakeBody = initSnake fieldSize,
+        snakeLength = 5,
+        direction = V2 0 1
+    }
