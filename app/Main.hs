@@ -1,10 +1,9 @@
 module Main where
 
 import Control.Concurrent
-import System.Random
+import System.Random (getStdGen)
 import Snake.Core
 import Snake.Io
-import Snake.RandomVec
 
 
 frameDelay = 200 * 1000 -- Microseconds

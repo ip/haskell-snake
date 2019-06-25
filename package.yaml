@@ -39,7 +39,6 @@ executables:
     dependencies:
     - bouncing-ball
     - random
-    - sdl2
 
 tests:
   bouncing-ball-test:
