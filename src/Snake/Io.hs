@@ -55,8 +55,32 @@ drawFrame_ ioState state = do
 
 getInputs_ :: IO Inputs
 getInputs_ = do
-    pollEvents
-    return $ Inputs Nothing
+    events <- pollEvents
+    let eventPayloads = eventPayload <$> events in
+        let eventsFiltered = filter (\e -> isKeyboardEvent e && isPressed e) eventPayloads in
+            return $ case eventsFiltered of
+                [] -> Inputs Nothing
+                _  -> (keyboardEventToInputs . last) eventsFiltered
+
+
+isKeyboardEvent :: EventPayload -> Bool
+isKeyboardEvent (KeyboardEvent _) = True
+isKeyboardEvent _                 = False
+
+isPressed :: EventPayload -> Bool
+isPressed (KeyboardEvent keyboardEvent) =
+    keyboardEventKeyMotion keyboardEvent == Pressed
+
+keyboardEventToInputs :: EventPayload -> Inputs
+keyboardEventToInputs (KeyboardEvent keyboardEvent) =
+    Inputs $ scanCodeToKey $ keysymScancode (keyboardEventKeysym keyboardEvent)
+
+scanCodeToKey :: Scancode -> Maybe Direction
+scanCodeToKey ScancodeRight = Just KeyRight_
+scanCodeToKey ScancodeDown  = Just KeyDown_
+scanCodeToKey ScancodeLeft  = Just KeyLeft_
+scanCodeToKey ScancodeUp    = Just KeyUp_
+scanCodeToKey _             = Nothing
 
 drawFood :: IoState -> GameState -> IO ()
 drawFood ioState state = drawTile ioState color pos
@@ -94,6 +118,3 @@ divV2 = liftA2 div
 vec2ToV2 :: Vec2 -> V2 Int
 vec2ToV2 v = V2 x y
     where Vec2 x y = v
-
--- Converts from HsCharm's Key to IO-independent Snake.Core.Key_;
--- Also wraps into Maybe

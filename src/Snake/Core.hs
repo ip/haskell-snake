@@ -1,6 +1,6 @@
 module Snake.Core (
     GameState (..),
-    Key_ (..),
+    Direction (..),
     Inputs (..),
     fieldSize,
     initSnake,
@@ -22,22 +22,24 @@ data GameState = GameState {
 
 fieldSize = Vec2 24 18
 
-data Key_ = KeyLeft_ | KeyRight_ | KeyUp_ | KeyDown_
-data Inputs = Inputs (Maybe Key_)
+-- Inputs from a given frame
+data Inputs = Inputs (Maybe Direction)
+
+data Direction = KeyLeft_ | KeyRight_ | KeyUp_ | KeyDown_
 
 
 updateState :: Inputs -> GameState -> GameState
 updateState i = moveSnake . updateDirection_ i
 
 updateDirection_ :: Inputs -> GameState -> GameState
-updateDirection_ (Inputs key) = updateDirection $ keyToDirection key
+updateDirection_ (Inputs key) = updateDirection $ directionToVec key
 
-keyToDirection :: Maybe Key_ -> Vec2 -> Vec2
-keyToDirection (Just KeyUp_) _    = Vec2 0    (-1)
-keyToDirection (Just KeyDown_) _  = Vec2 0    1
-keyToDirection (Just KeyRight_) _ = Vec2 1    0
-keyToDirection (Just KeyLeft_) _  = Vec2 (-1) 0
-keyToDirection Nothing d         = d
+directionToVec :: Maybe Direction -> Vec2 -> Vec2
+directionToVec (Just KeyUp_) _    = Vec2 0    (-1)
+directionToVec (Just KeyDown_) _  = Vec2 0    1
+directionToVec (Just KeyRight_) _ = Vec2 1    0
+directionToVec (Just KeyLeft_) _  = Vec2 (-1) 0
+directionToVec Nothing d         = d
 
 initSnake :: Vec2 -> [Vec2]
 initSnake fieldSize = [fieldSize // 2]
