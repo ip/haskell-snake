@@ -8,7 +8,7 @@ import Snake.Core
 import Snake.Io
 
 
-frameDelay = 500 * 1000 -- Microseconds
+frameDelay = 300 * 1000 -- Microseconds
 
 main :: IO ()
 main = do
