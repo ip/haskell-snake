@@ -112,51 +112,16 @@ restartGame s = initState randomGen_
 -- Setters
 
 updateSnakeBody :: ([V2 Int] -> [V2 Int]) -> GameState -> GameState
-updateSnakeBody f s = GameState {
-    randomGen = randomGen s,
-    foodPosition = foodPosition s,
-    snakeLength = snakeLength s,
-    direction = direction s,
-
-    snakeBody = f $ snakeBody s
-}
+updateSnakeBody f s = s { snakeBody = f $ snakeBody s }
 
 updateDirection :: (V2 Int -> V2 Int) -> GameState -> GameState
-updateDirection f s = GameState {
-    randomGen = randomGen s,
-    foodPosition = foodPosition s,
-    snakeBody = snakeBody s,
-    snakeLength = snakeLength s,
-
-    direction = f $ direction s
-}
+updateDirection f s = s { direction = f $ direction s }
 
 updateSnakeLength :: (Int -> Int) -> GameState -> GameState
-updateSnakeLength f s = GameState {
-    randomGen = randomGen s,
-    foodPosition = foodPosition s,
-    snakeBody = snakeBody s,
-    direction = direction s,
-
-    snakeLength = f $ snakeLength s
-}
+updateSnakeLength f s = s { snakeLength = f $ snakeLength s }
 
 updateFoodPosition :: (V2 Int -> V2 Int) -> GameState -> GameState
-updateFoodPosition f s = GameState {
-    randomGen = randomGen s,
-    snakeBody = snakeBody s,
-    direction = direction s,
-    snakeLength = snakeLength s,
-
-    foodPosition = f $ foodPosition s
-}
+updateFoodPosition f s = s { foodPosition = f $ foodPosition s }
 
 updateRandomGen :: (StdGen -> StdGen) -> GameState -> GameState
-updateRandomGen f s = GameState {
-    foodPosition = foodPosition s,
-    snakeBody = snakeBody s,
-    direction = direction s,
-    snakeLength = snakeLength s,
-
-    randomGen = f $ randomGen s
-}
+updateRandomGen f s = s { randomGen = f $ randomGen s }
