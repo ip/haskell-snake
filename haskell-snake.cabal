@@ -4,17 +4,17 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0b67322a8a37d02c97aa2485c0e3fa38b79dcb81767f6fcf4260f607fe98fcbb
+-- hash: 5e91b84e268b6001a6813e35528806098f3ed30fa0bb8ed780fba6b8c1036969
 
-name:           bouncing-ball
+name:           haskell-snake
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/bouncing-ball#readme>
-homepage:       https://github.com/githubuser/bouncing-ball#readme
-bug-reports:    https://github.com/githubuser/bouncing-ball/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2019 Author name here
-license:        BSD3
+description:    Please see the README on GitHub at <https://github.com/ip/haskell-snake>
+homepage:       https://github.com/ip/haskell-snake#readme
+bug-reports:    https://github.com/ip/haskell-snake/issues
+author:         Ivan Perevezentsev
+maintainer:     perevezentsev@protonmail.com
+copyright:      2019 Ivan Perevezentsev
+license:        MIT
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
@@ -23,7 +23,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/bouncing-ball
+  location: https://github.com/ip/haskell-snake
 
 library
   exposed-modules:
@@ -31,7 +31,7 @@ library
       Snake.Io
       Snake.RandomVec
   other-modules:
-      Paths_bouncing_ball
+      Paths_haskell_snake
   hs-source-dirs:
       src
   build-depends:
@@ -41,28 +41,28 @@ library
     , text
   default-language: Haskell2010
 
-executable bouncing-ball-exe
+executable haskell-snake-exe
   main-is: Main.hs
   other-modules:
-      Paths_bouncing_ball
+      Paths_haskell_snake
   hs-source-dirs:
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
-    , bouncing-ball
+    , haskell-snake
     , random
   default-language: Haskell2010
 
-test-suite bouncing-ball-test
+test-suite haskell-snake-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Paths_bouncing_ball
+      Paths_haskell_snake
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
-    , bouncing-ball
+    , haskell-snake
   default-language: Haskell2010

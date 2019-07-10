@@ -1,23 +1,23 @@
-name:                bouncing-ball
+name:                haskell-snake
 version:             0.1.0.0
-github:              "githubuser/bouncing-ball"
-license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2019 Author name here"
+github:              "ip/haskell-snake"
+license:             MIT
+author:              "Ivan Perevezentsev"
+maintainer:          "perevezentsev@protonmail.com"
+copyright:           "2019 Ivan Perevezentsev"
 
 extra-source-files:
 - README.md
 - ChangeLog.md
 
 # Metadata used when publishing your package
-# synopsis:            Short description of your package
-# category:            Web
+# synopsis:            Snake game in Haskell
+# category:            Games
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/bouncing-ball#readme>
+description:         Please see the README on GitHub at <https://github.com/ip/haskell-snake>
 
 dependencies:
 - base >= 4.7 && < 5
@@ -30,7 +30,7 @@ library:
     - text
 
 executables:
-  bouncing-ball-exe:
+  haskell-snake-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -38,11 +38,11 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - bouncing-ball
+    - haskell-snake
     - random
 
 tests:
-  bouncing-ball-test:
+  haskell-snake-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -50,4 +50,4 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - bouncing-ball
+    - haskell-snake
